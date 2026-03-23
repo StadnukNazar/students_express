@@ -34,8 +34,8 @@ app.use('/students', usersRouter);
 app.use('/weapons', weaponRouter);
 app.use('/sloniki', slonikiRouter);
 app.use('/cars', carsRouter);
-app.use('/heroes', heroesRouter); // Ваш локальний код
-app.use('/cats', catsRouter);     // Код з GitHub
+app.use('/heroes', heroesRouter); 
+app.use('/cats', catsRouter);     
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
