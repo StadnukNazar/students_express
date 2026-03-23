@@ -1,36 +1,116 @@
-<button 
-    style="background-color: rgb(142, 170, 230)">
-    <a style="color:#ffffff" href="/">
-        GO BACK
-    </a>
-</button>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Управління автомобілями</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; padding: 8px; box-sizing: border-box; }
+        .car-item { border: 1px solid #13c950; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        
+        /* Трохи оновив стилі для кнопок, щоб і <a>, і <button> виглядали однаково */
+        .btn { padding: 8px 12px; cursor: pointer; border: none; border-radius: 4px; color: white; margin-right: 5px; text-decoration: none; display: inline-block; font-size: 14px;}
+        .btn-submit { background-color: #28a745; font-size: 16px; width: 100%; margin-top: 10px; font-weight: bold; }
+        .btn-edit { background-color: #ffc107; color: black; }
+        .btn-delete { background-color: #dc3545; }
+        .btn-back { background-color: #6c757d; margin-bottom: 20px; }
+        .btn-back:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
 
-<table>
-    <thead>
-    <tr>
-        <th scope="col">ID</th>
-        <th scope="col">CAR BRAND</th>
-        <th scope="col">CAR MODEL</th>
-        <th scope="col">ENGINE TYPE</th>
-        <th scope="col">HORSEPOWER</th>
-        <th scope="col">WEIGHT</th>
-        <th scope="col">ACCELERATION 0 TO 100</th>
-        <th scope="col">PRICE</th>
+    <a href="/" class="btn btn-back">⬅ Go back</a>
 
-    </tr>
-    </thead>
-    <tbody>
-    {{#each cars}}
-        <tr>
-            <th scope="row">{{this.id}}</th>
-            <td>{{this.car_brand}}</td>
-            <td>{{this.car_model}}</td>
-            <td>{{this.engine_type}}</td>
-            <td>{{this.horsepower}}</td>
-            <td>{{this.weight}}</td>
-            <td>{{this.acceleration_0_to_100}}</td>  
-            <td>{{this.price}}</td>
-        </tr>
-    {{/each}}
-    </tbody>
-</table>
+    <h2>Додати новий автомобіль</h2>
+    
+    <form action="/cars" method="POST" style="background: #1a1d23; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+        
+        <div class="form-group">
+            <label for="car_brand">Марка авто (Brand):</label>
+            <input type="text" id="car_brand" name="car_brand" placeholder="Наприклад: Audi" required>
+        </div>
+
+        <div class="form-group">
+            <label for="car_model">Модель (Model):</label>
+            <input type="text" id="car_model" name="car_model" placeholder="Наприклад: A6" required>
+        </div>
+
+        <div class="form-group">
+            <label for="engine_type">Тип двигуна (Engine Type):</label>
+            <input type="text" id="engine_type" name="engine_type" placeholder="Наприклад: Бензин 3.0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="horsepower">Кінські сили (Horsepower):</label>
+            <input type="number" id="horsepower" name="horsepower" placeholder="Наприклад: 340" required>
+        </div>
+
+        <div class="form-group">
+            <label for="weight">Вага, кг (Weight):</label>
+            <input type="number" id="weight" name="weight" placeholder="Наприклад: 1800" required>
+        </div>
+
+        <div class="form-group">
+            <label for="acceleration_0_to_100">Розгін 0-100 км/год (с):</label>
+            <input type="number" step="0.1" id="acceleration_0_to_100" name="acceleration_0_to_100" placeholder="Наприклад: 5.1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Ціна, $ (Price):</label>
+            <input type="number" id="price" name="price" placeholder="Наприклад: 55000" required>
+        </div>
+
+        <button type="submit" class="btn btn-submit">Створити запис</button>
+    </form>
+
+    <hr>
+
+    <h2>Список автомобілів в базі</h2>
+    
+    <div id="cars-list">
+        {{#each cars}}
+            <div class="car-item" id="car-{{this.id}}">
+                <h3>{{this.car_brand}} {{this.car_model}}</h3>
+                <p>
+                    <strong>Двигун:</strong> {{this.engine_type}} | 
+                    <strong>Потужність:</strong> {{this.horsepower}} к.с. <br>
+                    <strong>Вага:</strong> {{this.weight}} кг | 
+                    <strong>Розгін 0-100:</strong> {{this.acceleration_0_to_100}} с <br>
+                    <strong>Ціна:</strong> ${{this.price}}
+                </p>
+                <p><small>Додано: {{this.created_at_date}} о {{this.created_at_time}}</small></p>
+                
+                <a href="/cars/edit/{{this.id}}" class="btn btn-edit">Редагувати</a>
+                
+                <button class="btn btn-delete delete-btn" data-id="{{this.id}}">Видалити</button>
+            </div>
+        {{else}}
+            <p>У базі поки що немає жодного автомобіля. Додайте перший!</p>
+        {{/each}}
+    </div>
+
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const carId = event.target.getAttribute('data-id');
+                
+                if (confirm('Ви впевнені, що хочете назавжди видалити цю машину?')) {
+                    try {
+                        const response = await fetch(`/cars/${carId}`, { method: 'DELETE' });
+
+                        if (response.ok) {
+                            document.getElementById(`car-${carId}`).remove();
+                        } else {
+                            alert('Виникла помилка при видаленні.');
+                        }
+                    } catch (error) {
+                        console.error('Помилка:', error);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
