@@ -17,7 +17,11 @@
         right: 10vw;
     }
     .body{
-        background-image: linear-gradient(to bottom right, #38A2D7, #561139); 
+        background-image:  #bdc3c7;
+  background: linear-gradient(
+    to right,
+    #5D4157,#A8CABA
+  ); 
         height:100vh
     }
 </style>
@@ -46,8 +50,13 @@
             <td>{{this.exercise_name}}</td>
             <td>{{this.difficult_level}}</td>
             <td>{{this.required_level}}</td>
-            <td>{{this.Muscle_name}}</td>
-            <td>{{this.Sets}}</td>
+            <td>{{this.muscle_name}}</td>
+            <td>{{this.sets}}</td>
+            <td>
+                  <button style="background-color: #000; padding: 5px 10px;">
+                      <a style="color:#fff; text-decoration: none;" href="/gym2/delete/{{this.id}}">DELETE</a>
+                  </button>
+            </td>
         </tr>
     {{/each}}
     </tbody>
