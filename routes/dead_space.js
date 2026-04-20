@@ -16,20 +16,20 @@ router.get('/', async function (req, res, next) {
 
 // Class 
 // -------------------------------------------------------------
-class Weapon{
-  constructor(additional_info){
+class Weapon {
+  constructor(additional_info) {
     this.additional_info = additional_info;
   }
 
-  async toJSON(){
+  async toJSON() {
     try {
       await db.query(
-        'UPDATE deadSpace SET additional_info = $1', 
+        'UPDATE deadSpace SET additional_info = $1',
         [this.additional_info]
       );
 
       const result = await db.query('SELECT * FROM deadSpace');
-      
+
       return result.rows;
     } catch (error) {
       console.error("Помилка:", error);
