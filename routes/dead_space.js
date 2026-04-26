@@ -4,12 +4,9 @@ import db from '../db/connector.js';
 
 // ─── Validation ───────────────────────────────────────────────
 class ValidationError extends Error {
-  constructor(message, field = null) {
+  constructor(message) {
     super(message);
     this.name = 'ValidationError';
-    this.field = field;
-    this.statusCode = 400;
-  }
 }
  
 function validateWeapon({ name_of_gun, damage_type, damage_dealth, reload_seconds }) {
